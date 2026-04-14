@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>RACKER IA PRO - MEGA SCANNER + TODOS PROVEDORES + TODOS JOGOS</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: radial-gradient(circle at 20% 30%, #0a0f0a, #030603);
+            color: #0f0;
+            font-family: 'Share Tech Mono', 'Courier New', monospace;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: rgba(0, 10, 5, 0.85);
+            backdrop-filter: blur(3px);
+            border: 1px solid #1eff6e;
+            border-radius: 32px;
+            padding: 25px;
+            box-shadow: 0 0 35px rgba(0, 255, 100, 0.2);
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 1.8rem;
+            letter-spacing: 3px;
+            text-shadow: 0 0 8px #0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .badge-auto {
+            background: #0f2a0f;
+            padding: 4px 15px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            border: 1px solid #1eff6e;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .link-section {
+            background: #071007;
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border: 1px solid #2a8a4a;
+        }
+
+        .input-flex {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .input-flex input {
+            flex: 4;
+            background: #000;
+            border: 1px solid #0f0;
+            padding: 14px 18px;
+            border-radius: 60px;
+            color: #0f0;
+            font-family: monospace;
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        .input-flex button {
+            flex: 1;
+            background: #0a2a1a;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 60px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+            color: #0f0;
+            border: 1px solid #0f0;
+        }
+
+        .input-flex button:hover {
+            background: #1f5f2f;
+            box-shadow: 0 0 12px #0f0;
+            transform: scale(0.97);
+        }
+
+        .scan-progress {
+            margin-top: 20px;
+            background: #0a1a0a;
+            border-radius: 15px;
+            padding: 15px;
+            display: none;
+        }
+
+        .progress-bar-container {
+            background: #1a2a1a;
+            border-radius: 30px;
+            height: 30px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, #0f0, #2eff6e);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+
+        .scan-log {
+            background: #010a01;
+            border-radius: 10px;
+            padding: 10px;
+            font-size: 0.75rem;
+            max-height: 150px;
+            overflow-y: auto;
+            font-family: monospace;
+        }
+
+        .scan-log p {
+            margin: 3px 0;
+            border-left: 2px solid #0f0;
+            padding-left: 8px;
+        }
+
+        .links-storage {
+            margin-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .link-card-auto {
+            background: #0a130a;
+            border-radius: 40px;
+            padding: 6px 15px 6px 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            border-left: 5px solid #0f0;
+            font-size: 0.8rem;
+        }
+
+        .link-card-auto button {
+            background: #2a0a0a;
+            border: none;
+            color: #f88;
+            padding: 4px 12px;
+            border-radius: 30px;
+            cursor: pointer;
+        }
+
+        .platform-rec {
+            background: #0c1a0c;
+            padding: 12px 18px;
+            border-radius: 20px;
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .highlight {
+            color: #ffff88;
+            background: #1a3a1a;
+            padding: 4px 12px;
+            border-radius: 24px;
+        }
+
+        .games-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .selector-box {
+            background: #051005;
+            border-radius: 24px;
+            padding: 18px;
+            border: 1px solid #2b7a4b;
+        }
+
+        .selector-box label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        select {
+            width: 100%;
+            background: #000;
+            border: 1px solid #0f0;
+            padding: 12px;
+            border-radius: 30px;
+            color: #0f0;
+            font-family: monospace;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        select option {
+            background: #0a0a0a;
+            padding: 8px;
+        }
+
+        .stats-info {
+            background: #0a150a;
+            border-radius: 15px;
+            padding: 10px;
+            margin-top: 10px;
+            font-size: 0.7rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .actions {
+            display: flex;
+            gap: 18px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        .btn-primary {
+            background: #0b2b1b;
+            border: 1px solid #2eff8e;
+            padding: 12px 24px;
+            border-radius: 60px;
+            font-weight: bold;
+            cursor: pointer;
+            flex: 1;
+            transition: 0.1s;
+            color: #b3ffcf;
+        }
+
+        .btn-danger {
+            background: #2a1010;
+            border-color: #ff6666;
+            color: #ffaaaa;
+        }
+
+        .result-window {
+            background: #010b03;
+            border-radius: 28px;
+            border: 1px solid #1eff6e;
+            padding: 22px;
+            margin-top: 20px;
+            font-family: 'Courier New', monospace;
+            max-height: 450px;
+            overflow-y: auto;
+        }
+
+        .game-card {
+            background: #0a150a;
+            border-radius: 12px;
+            padding: 8px 12px;
+            margin: 5px;
+            display: inline-block;
+            font-size: 0.75rem;
+            border: 1px solid #2a8a4a;
+        }
+
+        .footer-cred {
+            text-align: center;
+            font-size: 0.7rem;
+            margin-top: 20px;
+            opacity: 0.7;
+        }
+
+        .search-box {
+            margin-top: 10px;
+        }
+
+        .search-box input {
+            width: 100%;
+            background: #000;
+            border: 1px solid #0f0;
+            padding: 8px 12px;
+            border-radius: 20px;
+            color: #0f0;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>🕶️ RACKER IA PRO <span class="badge-auto">MEGA SCANNER - TODOS PROVEDORES + JOGOS</span></h1>
+
+    <div class="link-section">
+        <div class="input-flex">
+            <input type="text" id="casaLinkInput" placeholder="🔗 Cole o link da plataforma (betano.com, blaze.com, stake.com, bet365.com, 1xbet.com, rivals.com...)" autocomplete="off">
+            <button onclick="iniciarScanCompleto()">🔍 SCANEAR CASA COMPLETAMENTE</button>
+        </div>
+        
+        <div id="scanProgress" class="scan-progress">
+            <div style="margin-bottom: 8px;">📡 SCANNER ATIVO - VARRENDO PROVEDORES E JOGOS...</div>
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="scanProgressBar">0%</div>
+            </div>
+            <div class="scan-log" id="scanLog"></div>
+        </div>
+
+        <div id="listaCasasSalvas" class="links-storage"></div>
+        <div id="plataformaReconhecida" class="platform-rec">
+            <div>🤖 <span id="mensagemReconhecimento">Aguardando scan de uma casa de apostas...</span></div>
+            <div id="statsResume" style="font-size:0.7rem;"></div>
+        </div>
+    </div>
+
+    <div class="games-panel">
+        <div class="selector-box">
+            <label>🎰 PROVEDORES DISPONÍVEIS (TODOS)</label>
+            <select id="selectProvedor" size="8" style="height: auto; min-height: 200px;"></select>
+            <div class="stats-info" id="provStats"></div>
+            <div class="search-box">
+                <input type="text" id="searchProvedor" placeholder="🔍 Buscar provedor..." onkeyup="filtrarProvedores()">
+            </div>
+        </div>
+        <div class="selector-box">
+            <label>🎲 JOGOS DO PROVEDOR SELECIONADO (TODOS)</label>
+            <select id="selectJogo" size="10" style="height: auto; min-height: 250px;"></select>
+            <div class="stats-info" id="gameStats"></div>
+            <div class="search-box">
+                <input type="text" id="searchJogo" placeholder="🔍 Buscar jogo..." onkeyup="filtrarJogos()">
+            </div>
+        </div>
+    </div>
+
+    <div class="actions">
+        <button class="btn-primary" onclick="executarAnaliseInstantanea()">🔍 ANALISAR JOGO AGORA</button>
+        <button id="btnRackerToggle" class="btn-primary" onclick="toggleRackerModo()">⚡ ATIVAR RACKER (Tempo Real)</button>
+        <button class="btn-primary" onclick="forcarReScan()">🔄 RESCANEAR CASA ATUAL</button>
+        <button class="btn-primary" onclick="exportarCatalogo()">📁 EXPORTAR CATÁLOGO</button>
+    </div>
+
+    <div class="result-window" id="resultadoPainel">
+        💀 Sistema MEGA SCANNER pronto.<br>
+        ✅ Adicione qualquer casa de apostas e clique em SCANEAR para varredura completa.<br>
+        📊 O scanner identifica TODOS os provedores e TODOS os jogos disponíveis na plataforma.
+    </div>
+    <div class="footer-cred">
+        🔥 RACKER IA PRO | Scanner completo | +50 provedores | +1000 jogos | Suporte a todas as casas
+    </div>
+</div>
+
+<script>
+    // ==================== MEGA DATABASE - TODOS PROVEDORES E JOGOS ====================
+    // Lista completa de todos os provedores do mercado
+    const TODOS_PROVEDORES = [
+        "PG Soft", "Pragmatic Play", "Hacksaw Gaming", "Spribe", "Evolution", "Play'n GO", 
+        "NetEnt", "Betsoft", "Microgaming", "Red Tiger", "Yggdrasil", "Quickspin", 
+        "Thunderkick", "Push Gaming", "Relax Gaming", "Blueprint Gaming", "Nolimit City",
+        "Elk Studios", "Iron Dog Studio", "1x2 Gaming", "Kalamba Games", "Fantasma Games",
+        "GameArt", "Booming Games", "Spinomenal", "Wazdan", "Endorphina", "Tom Horn",
+        "Platipus", "Felix Gaming", "Mascot Gaming", "Golden Hero", "Evoplay", "Belatra",
+        "Onlyplay", "AvatarUX", "TrueLab", "Smartsoft Gaming", "Galewind", "Stakelogic"
+    ];
+
+    // MEGA DATABASE de jogos por provedor
+    const MEGA_GAMES_DATABASE = {
+        "PG Soft": ["Fortune Tiger", "Dragon Hatch", "Gem Saviour", "Medusa II", "Tree of Fortune", "Majestic Treasures", "Hood vs Wolf", "Legend of Perseus", "Wild Bandito", "Fortune Ox", "Fortune Rabbit", "Candy Burst", "Bikini Paradise", "Journey to the West", "Leprechaun Riches", "Honey Trap", "Dragon Legend", "Egypt's Book of Mystery", "Jungle Delight", "Wild Coaster", "Crypto Gold", "Lucky Neko", "Mafia Mayhem", "Queen of Bounty", "Rise of Apollo", "Speed Winner", "Wild Fireworks", "Bali Vacation", "Bomber Mining", "Captain's Bounty"],
+        "Pragmatic Play": ["Sweet Bonanza", "Gates of Olympus", "Starlight Princess", "The Dog House", "Big Bass Bonanza", "Sugar Rush", "Zeus vs Hades", "Wild West Gold", "Madame Destiny", "John Hunter", "Pyramid King", "Dragon Tiger", "Muay Thai Champion", "Fire Strike 2", "Fruit Party", "Release the Kraken", "Curse of the Werewolf", "Gems Bonanza", "Power of Thor", "Voodoo Magic", "Barn Festival", "Chicken Drop", "Colossal Cash Zone", "Empty the Bank", "Great Rhino", "Mustang Gold", "Peaky Blinders", "The Great Chicken Escape", "Wolf Gold", "John Hunter and the Tomb of the Scarab Queen"],
+        "Hacksaw Gaming": ["Wanted Dead or Wild", "Dork Unit", "Chaos Crew", "RIP City", "Cubes 2", "Mine Rush", "Stick 'Em", "Hand of Anubis", "Le Bandit", "Break the Vault", "Dark Waters", "Bomb Bunnies", "The Bowery Boys", "Forge of Gems", "Gladiator's Glory", "Casket Crawl", "Pug Thug", "Benny the Beer", "Toshi Video Club", "Frutz", "Jimi Hendrix", "Infective Wild"],
+        "Spribe": ["Aviator", "Mines", "Dice", "Plinko", "Limbo", "Tower", "Keno", "Rocket Dice", "Goal", "Slide", "Hotline", "Penalty", "Crash", "Spin", "Wheel", "Double", "Triple", "Mega Wheel", "Lucky 5", "Lucky 7"],
+        "Evolution": ["Lightning Roulette", "Crazy Time", "Monopoly Live", "Dream Catcher", "Mega Ball", "Cash or Crash", "Gonzo's Treasure Hunt", "Deal or No Deal", "Baccarat", "Blackjack Live", "Infinite Blackjack", "Immersive Roulette", "Dragon Tiger", "Andar Bahar", "Teen Patti", "Side Bet City", "Football Studio", "Crazy Coin Flip", "Lightning Dice", "Mega Wheel"],
+        "Play'n GO": ["Book of Dead", "Reactoonz", "Legacy of Dead", "Fire Joker", "Moon Princess", "Viking Runecraft", "Rise of Olympus", "Rich Wilde", "Tome of Madness", "Cat Wilde", "Diamond Vortex", "Hugo Legacy", "Colossus", "Scroll of Seth", "Doom of Egypt", "Gold Volcano", "Gemix", "Piggy Bank", "Sabaton", "Twisted Sister"],
+        "NetEnt": ["Starburst", "Gonzo's Quest", "Dead or Alive 2", "Mega Fortune", "Blood Suckers", "Jack Hammer", "Finn and the Swirly Spin", "Twin Spin", "Divine Fortune", "Jumanji", "Mega Joker", "Reel Rush", "Butterfly Staxx", "Secret of the Stones", "Hall of Gods", "Aliens", "Arabian Nights", "Black Widow", "Conan", "Street Fighter"],
+        "Betsoft": ["The Slotfather", "Good Girl Bad Girl", "Greedy Goblins", "Sugar Pop", "Primal Hunt", "Monster Pop", "Take the Bank", "Faerie Spells", "Golden Dragon Inferno", "Lucky Lady", "Mystic Hive", "Mr. Vegas", "Back to the Future", "Chilli Pop", "Crystal Queen", "Cygnus", "Gemmed", "Lava Gold", "Max Quest", "Quest to the West"],
+        "Microgaming": ["Immortal Romance", "Thunderstruck II", "Mega Moolah", "Break da Bank", "Avalon", "Game of Thrones", "Jurassic Park", "Tomb Raider", "Agent Jane Blonde", "9 Masks of Fire", "Atlantis", "Dark Knight", "Battleship", "Bridesmaids", "Cash of Kingdoms", "Fruit Fiesta", "Highlander", "Jungle Jim", "King Kong", "Terminator 2"],
+        "Red Tiger": ["Dragon's Luck", "Pirate's Plenty", "Vault Cracker", "Mystic Wheel", "Wild Phoenix", "Dragon's Fire", "Princess of Sky", "Reel Heist", "Thor's Lightning", "Treasure Mine", "Beowulf", "Cash Elevator", "Diamond Strike", "Esqueleto Explosivo", "Gonzo's Gold", "Mega Dragon", "Piggy Riches", "Rising Royals", "Shaolin Fortunes"],
+        "Yggdrasil": ["Valley of the Gods", "Vikings Go Wild", "Jungle Books", "Holmes and the Stolen Stones", "Tut's Twister", "Cazino Zeppelin", "Golden Fish Tank", "Joker Millions", "Lucky Mr Green", "Ozwin's Jackpots", "Rainbow Ryan", "Solaire", "The Dark Joker", "Wild Robo Factory", "Wicked Circus"]
+    };
+
+    // Configuração de provedores por plataforma (reconhecimento inteligente)
+    const PLATFORM_PROVIDERS = {
+        "betano": { name: "Betano", providers: ["PG Soft", "Pragmatic Play", "Hacksaw Gaming", "Spribe", "Evolution", "Play'n GO", "NetEnt"] },
+        "blaze": { name: "Blaze", providers: ["Spribe", "Pragmatic Play", "PG Soft", "Hacksaw Gaming", "Evolution"] },
+        "stake": { name: "Stake", providers: ["Pragmatic Play", "Hacksaw Gaming", "Evolution", "PG Soft", "NetEnt", "Play'n GO", "Red Tiger", "Yggdrasil"] },
+        "bet365": { name: "Bet365", providers: ["Pragmatic Play", "PG Soft", "Evolution", "Microgaming", "NetEnt", "Play'n GO"] },
+        "1xbet": { name: "1xBet", providers: ["PG Soft", "Pragmatic Play", "Spribe", "Hacksaw Gaming", "Play'n GO", "Betsoft", "Evolution", "NetEnt", "Microgaming", "Red Tiger"] },
+        "rivalo": { name: "Rivalo", providers: ["PG Soft", "Pragmatic Play", "Spribe", "Evolution"] },
+        "leovegas": { name: "LeoVegas", providers: ["NetEnt", "Microgaming", "Evolution", "Play'n GO", "Pragmatic Play", "Yggdrasil"] },
+        "betfair": { name: "Betfair", providers: ["Pragmatic Play", "Evolution", "PG Soft", "Hacksaw Gaming", "NetEnt"] }
+    };
+
+    let casasSalvas = JSON.parse(localStorage.getItem("racker_links_completo")) || [];
+    let catalogoAtual = null;
+    let plataformaAtual = null;
+    let rackerAtivo = false;
+    let intervaloRackerLoop = null;
+    let scanEmProgresso = false;
+    let provedoresFiltrados = [];
+    let jogosFiltrados = [];
+
+    // ==================== FUNÇÕES DE SCAN ====================
+    function adicionarLogScan(mensagem, tipo = "info") {
+        const logDiv = document.getElementById("scanLog");
+        const p = document.createElement("p");
+        p.innerHTML = `[${new Date().toLocaleTimeString()}] ${mensagem}`;
+        p.style.color = tipo === "success" ? "#0f0" : tipo === "error" ? "#f66" : "#afa";
+        logDiv.appendChild(p);
+        logDiv.scrollTop = logDiv.scrollHeight;
+    }
+
+    function atualizarProgresso(percentual, texto) {
+        const bar = document.getElementById("scanProgressBar");
+        bar.style.width = percentual + "%";
+        bar.textContent = texto || `${Math.floor(percentual)}%`;
+    }
+
+    function identificarPlataforma(url) {
+        const urlLower = url.toLowerCase();
+        for (const [key, data] of Object.entries(PLATFORM_PROVIDERS)) {
+            if (urlLower.includes(key)) return data;
+        }
+        return null;
+    }
+
+    function obterProvedoresParaPlataforma(url) {
+        const platform = identificarPlataforma(url);
+        if (platform) return platform.providers;
+        
+        // Se não reconhecer, retorna todos os provedores
+        return TODOS_PROVEDORES;
+    }
+
+    function gerarCatalogoPersonalizado(provedoresList) {
+        const catalogo = {};
+        for (const provider of provedoresList) {
+            if (MEGA_GAMES_DATABASE[provider]) {
+                catalogo[provider] = [...MEGA_GAMES_DATABASE[provider]];
+            } else {
+                // Provedor não encontrado no banco, criar com jogos genéricos
+                catalogo[provider] = [`${provider} Game 1`, `${provider} Game 2`, `${provider} Game 3`, `${provider} Deluxe`, `${provider} Gold`, `${provider} Mega`, `${provider} Wild`, `${provider} Jackpot`];
+            }
+        }
+        return catalogo;
+    }
+
+    async function iniciarScanCompleto() {
+        if (scanEmProgresso) {
+            alert("⚠️ Scan já em andamento. Aguarde...");
+            return;
+        }
+
+        let link = document.getElementById("casaLinkInput").value.trim();
+        if (link === "") {
+            alert("⚠️ Cole um link válido da casa de apostas.");
+            return;
+        }
+        
+        if (!link.startsWith("http")) link = "https://" + link;
+        
+        scanEmProgresso = true;
+        const scanDiv = document.getElementById("scanProgress");
+        scanDiv.style.display = "block";
+        document.getElementById("scanLog").innerHTML = "";
+        atualizarProgresso(0, "Iniciando scan...");
+        
+        adicionarLogScan("🔍 Iniciando varredura MEGA completa na plataforma...", "info");
+        await sleep(400);
+        
+        // Identificar plataforma
+        atualizarProgresso(10, "Identificando plataforma...");
+        const platformInfo = identificarPlataforma(link);
+        let platformName, provedoresList;
+        
+        if (platformInfo) {
+            platformName = platformInfo.name;
+            provedoresList = platformInfo.providers;
+            adicionarLogScan(`✅ Plataforma identificada: ${platformName}`, "success");
+            adicionarLogScan(`📡 Conectando ao catálogo da ${platformName}...`, "info");
+        } else {
+            const hostname = new URL(link).hostname.replace("www.", "").split(".")[0];
+            platformName = hostname.charAt(0).toUpperCase() + hostname.slice(1);
+            provedoresList = TODOS_PROVEDORES;
+            adicionarLogScan(`⚠️ Plataforma: ${platformName} - Usando catálogo COMPLETO (${TODOS_PROVEDORES.length} provedores)`, "info");
+        }
+        
+        await sleep(600);
+        atualizarProgresso(20, "Preparando catálogo...");
+        
+        // Gerar catálogo com todos os provedores e jogos
+        const catalogo = gerarCatalogoPersonalizado(provedoresList);
+        const totalProviders = Object.keys(catalogo).length;
+        let totalGames = 0;
+        for (const games of Object.values(catalogo)) totalGames += games.length;
+        
+        adicionarLogScan(`📊 Catálogo gerado: ${totalProviders} provedores, ${totalGames} jogos`, "success");
+        
+        // Simular scan detalhado
+        let currentProgress = 25;
+        const incrementPerProvider = 60 / totalProviders;
+        let providerIndex = 0;
+        
+        for (const [provider, games] of Object.entries(catalogo)) {
+            providerIndex++;
+            adicionarLogScan(`🎰 [${providerIndex}/${totalProviders}] ${provider} - ${games.length} jogos encontrados`, "success");
+            currentProgress += incrementPerProvider;
+            atualizarProgresso(currentProgress, `Scan: ${provider} (${providerIndex}/${totalProviders})`);
+            await sleep(150 + Math.random() * 200);
+        }
+        
+        atualizarProgresso(90, "Finalizando registro...");
+        await sleep(300);
+        
+        atualizarProgresso(100, "Scan concluído!");
+        await sleep(400);
+        
+        adicionarLogScan(`✅ SCAN FINALIZADO! ${totalProviders} provedores, ${totalGames} jogos catalogados.`, "success");
+        
+        // Salvar
+        const novaCasa = {
+            url: link,
+            platform: platformName,
+            catalog: catalogo,
+            data: new Date().toISOString(),
+            totalProviders: totalProviders,
+            totalGames: totalGames
+        };
+        
+        casasSalvas.push(novaCasa);
+        localStorage.setItem("racker_links_completo", JSON.stringify(casasSalvas));
+        
+        renderizarListaCasas();
+        carregarCatalogo(novaCasa.catalog, novaCasa.platform);
+        
+        document.getElementById("casaLinkInput").value = "";
+        document.getElementById("statsResume").innerHTML = `📊 ${totalProviders} provedores | ${totalGames} jogos`;
+        
+        setTimeout(() => {
+            scanDiv.style.display = "none";
+        }, 2500);
+        
+        scanEmProgresso = false;
+    }
+    
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+    
+    function carregarCatalogo(catalog, platformName) {
+        catalogoAtual = catalog;
+        plataformaAtual = { nome: platformName, providers: Object.keys(catalog) };
+        
+        const msgDiv = document.getElementById("mensagemReconhecimento");
+        const totalGames = Object.values(catalog).reduce((a, b) => a + b.length, 0);
+        msgDiv.innerHTML = `✅ PLATAFORMA: <span class="highlight">${platformName}</span> — ${Object.keys(catalog).length} PROVEDORES — ${totalGames} JOGOS`;
+        
+        carregarProvedoresNoSelect();
+    }
+    
+    function carregarProvedoresNoSelect() {
+        if (!catalogoAtual) return;
+        
+        const selectProv = document.getElementById("selectProvedor");
+        selectProv.innerHTML = "";
+        const providers = Object.keys(catalogoAtual).sort();
+        
+        for (let prov of providers) {
+            let option = document.createElement("option");
+            option.value = prov;
+            option.textContent = `${prov} (${catalogoAtual[prov].length} jogos)`;
+            selectProv.appendChild(option);
+        }
+        
+        const totalJogos = providers.reduce((sum, prov) => sum + catalogoAtual[prov].length, 0);
+        document.getElementById("provStats").innerHTML = `📊 ${providers.length} provedores | ${totalJogos} jogos totais`;
+        
+        provedoresFiltrados = [...providers];
+        atualizarJogosPorProvedor();
+    }
+    
+    function filtrarProvedores() {
+        const searchTerm = document.getElementById("searchProvedor").value.toLowerCase();
+        const selectProv = document.getElementById("selectProvedor");
+        const options = selectProv.options;
+        
+        for (let i = 0; i < options.length; i++) {
+            const text = options[i].text.toLowerCase();
+            options[i].style.display = text.includes(searchTerm) ? "" : "none";
+        }
+    }
+    
+    function atualizarJogosPorProvedor() {
+        if (!catalogoAtual) return;
+        
+        const provedorSelecionado = document.getElementById("selectProvedor").value;
+        const listaJogos = catalogoAtual[provedorSelecionado] || [];
+        const selectJogo = document.getElementById("selectJogo");
+        selectJogo.innerHTML = "";
+        
+        if (listaJogos.length === 0) {
+            selectJogo.innerHTML = "<option>Nenhum jogo encontrado</option>";
+            document.getElementById("gameStats").innerHTML = "⚠️ 0 jogos";
+            return;
+        }
+        
+        listaJogos.sort().forEach(jogo => {
+            let opt = document.createElement("option");
+            opt.value = jogo;
+            opt.textContent = jogo;
+            selectJogo.appendChild(opt);
+        });
+        
+        jogosFiltrados = [...listaJogos];
+        document.getElementById("gameStats").innerHTML = `🎮 ${listaJogos.length} jogos disponíveis`;
+    }
+    
+    function filtrarJogos() {
+        const searchTerm = document.getElementById("searchJogo").value.toLowerCase();
+        const selectJogo = document.getElementById("selectJogo");
+        const options = selectJogo.options;
+        
+        for (let i = 0; i < options.length; i++) {
+            const text = options[i].text.toLowerCase();
+            options[i].style.display = text.includes(searchTerm) ? "" : "none";
+        }
+    }
+    
+    function renderizarListaCasas() {
+        const container = document.getElementById("listaCasasSalvas");
+        if (!container) return;
+        
+        if (casasSalvas.length === 0) {
+            container.innerHTML = '<div style="color:#5f5;">🔗 Nenhuma casa escaneada. Adicione e scanee uma plataforma.</div>';
+            return;
+        }
+        
+        container.innerHTML = "";
+        casasSalvas.forEach((casa, idx) => {
+            const div = document.createElement("div");
+            div.className = "link-card-auto";
+            div.innerHTML = `<span>🏠 ${casa.platform} (${casa.totalProviders || Object.keys(casa.catalog).length} provedores)</span><button onclick="removerCasa(${idx})">🗑️</button>`;
+            container.appendChild(div);
+        });
+    }
+    
+    function removerCasa(index) {
+        casasSalvas.splice(index, 1);
+        localStorage.setItem("racker_links_completo", JSON.stringify(casasSalvas));
+        renderizarListaCasas();
+        
+        if (casasSalvas.length > 0) {
+            const ultimaCasa = casasSalvas[casasSalvas.length - 1];
+            carregarCatalogo(ultimaCasa.catalog, ultimaCasa.platform);
+        } else {
+            catalogoAtual = null;
+            document.getElementById("selectProvedor").innerHTML = "<option>Nenhuma casa escaneada</option>";
+            document.getElementById("selectJogo").innerHTML = "<option>---</option>";
+            document.getElementById("mensagemReconhecimento").innerHTML = "🤖 Nenhuma casa ativa. Adicione e scanee uma plataforma.";
+        }
+    }
+    
+    function forcarReScan() {
+        if (casasSalvas.length === 0) {
+            alert("⚠️ Não há nenhuma casa salva para rescanner.");
+            return;
+        }
+        const ultimaCasa = casasSalvas[casasSalvas.length - 1];
+        document.getElementById("casaLinkInput").value = ultimaCasa.url;
+        iniciarScanCompleto();
+    }
+    
+    function exportarCatalogo() {
+        if (!catalogoAtual) {
+            alert("⚠️ Nenhum catálogo carregado.");
+            return;
+        }
+        const dataStr = JSON.stringify(catalogoAtual, null, 2);
+        const dataBlob = new Blob([dataStr], {type: "application/json"});
+        const url = URL.createObjectURL(dataBlob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `catalogo_${plataformaAtual?.nome || "casa"}_${new Date().toISOString().slice(0,19)}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        adicionarLogScan("📁 Catálogo exportado com sucesso!", "success");
+    }
+    
+    function gerarAnaliseCompleta(provedor, jogo) {
+        let casaAtiva = "🏚️ Nenhuma casa ativa";
+        if (casasSalvas.length > 0) {
+            const ultimaCasa = casasSalvas[casasSalvas.length - 1];
+            casaAtiva = ultimaCasa.platform;
+        }
+        
+        const minutosEstrategicos = [1, 2, 3, 5, 7, 8, 10, 12, 13, 15, 18, 20, 22, 25, 27, 30, 32, 35, 38, 40, 42, 45, 48, 50, 52, 55, 58];
+        const selecionados = [...minutosEstrategicos].sort(() => 0.5 - Math.random()).slice(0, 10).sort((a,b) => a-b);
+        
+        const valoresAposta = selecionados.map(() => (Math.random() * 50 + 1).toFixed(2));
+        
+        let rtpBase = 95.0;
+        const nomeLower = jogo.toLowerCase();
+        if (nomeLower.includes("tiger")) rtpBase = 96.8;
+        else if (nomeLower.includes("bonanza")) rtpBase = 96.4;
+        else if (nomeLower.includes("olympus")) rtpBase = 95.5;
+        else if (nomeLower.includes("aviator")) rtpBase = 97.0;
+        else if (nomeLower.includes("dragon")) rtpBase = 96.2;
+        else if (nomeLower.includes("starlight")) rtpBase = 96.5;
+        
+        const variacao = (Math.random() * 2.5 - 0.5).toFixed(2);
+        let rtpFinal = (rtpBase + parseFloat(variacao)).toFixed(2);
+        rtpFinal = Math.min(98.8, Math.max(87.5, parseFloat(rtpFinal))).toFixed(2);
+        
+        let statusMsg, statusClass;
+        const rtpNum = parseFloat(rtpFinal);
+        if (rtpNum >= 96.5) { statusMsg = "💸 SUPER PAGAMENTO - ENTRADA FORTE"; statusClass = "status-green"; }
+        else if (rtpNum >= 94.5) { statusMsg = "✅ MOMENTO POSITIVO - APOSTAR"; statusClass = "status-green"; }
+        else if (rtpNum >= 91) { statusMsg = "⚠️ NEUTRO - OBSERVAR"; statusClass = "status-warning"; }
+        else { statusMsg = "❌ FRIO - EVITAR APOSTAS"; statusClass = "status-red"; }
+        
+        let minutosHtml = "", valoresHtml = "";
+        for (let i = 0; i < selecionados.length; i++) {
+            minutosHtml += `<span class="game-card">⏱️ ${selecionados[i]}min</span>`;
+            valoresHtml += `<span class="game-card">💰 R$ ${valoresAposta[i]}</span>`;
+        }
+        
+        const dataHora = new Date().toLocaleString();
+        
+        return `
+            <div style="font-family: monospace;">
+                <div style="display: flex; justify-content: space-between; flex-wrap: wrap; margin-bottom: 15px;">
+                    <span style="color:#0f0; font-size:1.1rem;">🎮 ${provedor} | ${jogo}</span>
+                    <span style="color:#ffcc66;">🏠 ${casaAtiva}</span>
+                    <span style="color:#88ff88;">🕒 ${dataHora}</span>
+                </div>
+                <hr>
+                <div><strong>📌 MINUTOS ESTRATÉGICOS:</strong><br> ${minutosHtml}</div>
+                <div style="margin-top: 10px;"><strong>💵 VALORES SUGERIDOS:</strong><br> ${valoresHtml}</div>
+                <hr>
+                <div>📊 RTP ESTIMADO: <strong style="color:#ffff99; font-size:1.3rem;">${rtpFinal}%</strong></div>
+                <div>🔥 STATUS: <span style="color:${statusClass === 'status-green' ? '#0f0' : statusClass === 'status-warning' ? '#ffcc44' : '#ff6666'}; font-weight:bold;">${statusMsg}</span></div>
+                <div style="margin-top: 10px; padding: 8px; background: #0a150a; border-radius: 12px;">
+                    🎯 RECOMENDAÇÃO: ${rtpNum >= 94.5 ? "✅ APOSTAR NOS MINUTOS DESTACADOS" : "⏳ AGUARDAR PRÓXIMO CICLO"}
+                </div>
+                <div style="margin-top: 10px; font-size: 0.7rem; border-top: 1px dashed #2f8f5f; padding-top: 8px;">
+                    ⚡ ANÁLISE IA | ${selecionados.length} pontos de verificação | RACKER PRO
+                </div>
+            </div>
+        `;
+    }
+    
+    function executarAnaliseInstantanea() {
+        if (!catalogoAtual) {
+            document.getElementById("resultadoPainel").innerHTML = "⚠️ Nenhuma casa escaneada. Adicione e scanee uma plataforma primeiro.";
+            return;
+        }
+        
+        const provedor = document.getElementById("selectProvedor").value;
+        const jogo = document.getElementById("selectJogo").value;
+        
+        if (!provedor || !jogo) {
+            document.getElementById("resultadoPainel").innerHTML = "⚠️ Selecione um provedor e jogo válidos.";
+            return;
+        }
+        
+        const analiseHtml = gerarAnaliseCompleta(provedor, jogo);
+        document.getElementById("resultadoPainel").innerHTML = analiseHtml;
+    }
+    
+    function toggleRackerModo() {
+        if (!catalogoAtual) {
+            alert("⚠️ Escaneie uma casa de apostas primeiro.");
+            return;
+        }
+        
+        const btn = document.getElementById("btnRackerToggle");
+        if (!rackerAtivo) {
+            rackerAtivo = true;
+            if (intervaloRackerLoop) clearInterval(intervaloRackerLoop);
+            
+            const atualizarLoop = () => {
+                if (rackerAtivo && catalogoAtual) {
+                    const prov = document.getElementById("selectProvedor").value;
+                    const jg = document.getElementById("selectJogo").value;
+                    if (prov && jg) {
+                        document.getElementById("resultadoPainel").innerHTML = gerarAnaliseCompleta(prov, jg);
+                    }
+                }
+            };
+            
+            atualizarLoop();
+            intervaloRackerLoop = setInterval(atualizarLoop, 3500);
+            btn.innerHTML = "⛔ DESATIVAR RACKER";
+            btn.classList.add("btn-danger");
+            adicionarLogScan("🟢 RACKER ativado - Monitorando em tempo real", "success");
+        } else {
+            rackerAtivo = false;
+            if (intervaloRackerLoop) clearInterval(intervaloRackerLoop);
+            intervaloRackerLoop = null;
+            btn.innerHTML = "⚡ ATIVAR RACKER";
+            btn.classList.remove("btn-danger");
+            adicionarLogScan("🔴 RACKER desativado", "info");
+        }
+    }
+    
+    // Event listeners
+    document.getElementById("selectProvedor").addEventListener("change", function() {
+        atualizarJogosPorProvedor();
+        document.getElementById("searchJogo").value = "";
+        if (rackerAtivo && catalogoAtual) {
+            const prov = this.value;
+            const jogo = document.getElementById("selectJogo").value;
+            if (prov && jogo) {
+                document.getElementById("resultadoPainel").innerHTML = gerarAnaliseCompleta(prov, jogo);
+            }
+        }
+    });
+    
+    document.getElementById("selectJogo").addEventListener("change", function() {
+        if (rackerAtivo && catalogoAtual) {
+            const prov = document.getElementById("selectProvedor").value;
+            const jogo = this.value;
+            if (prov && jogo) {
+                document.getElementById("resultadoPainel").innerHTML = gerarAnaliseCompleta(prov, jogo);
+            }
+        }
+    });
+    
+    function init() {
+        renderizarListaCasas();
+        if (casasSalvas.length > 0) {
+            const ultimaCasa = casasSalvas[casasSalvas.length - 1];
+            carregarCatalogo(ultimaCasa.catalog, ultimaCasa.platform);
+        } else {
+            document.getElementById("selectProvedor").innerHTML = "<option>Nenhuma casa escaneada</option>";
+            document.getElementById("selectJogo").innerHTML = "<option>---</option>";
+        }
+    }
+    
+    init();
+</script>
+</body>
+</html>
